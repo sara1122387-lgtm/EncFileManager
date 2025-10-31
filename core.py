@@ -1,14 +1,14 @@
 from cryptography.fernet import Fernet
-import os
+from typing import Optional
+from pathlib import Path
 
 class FileHandler:
     def __init__(self, file_path):
-        self._file_path = file_path
+        self._file_path = Path(file_path)
 
     def _ensure_folder_exists(self):
-        folder = os.path.dirname(self._file_path)
-        if folder and not os.path.exists(folder):
-            os.makedirs(folder, exist_ok=True)
+        folder = Path(self._file_path).parent
+        folder.mkdir(parents=True, exist_ok=True)
 
     @property
     def file_path(self):
@@ -19,87 +19,112 @@ class FileHandler:
         self._file_path = new_path
 
     @staticmethod
-    def is_valid_extension(file_name, extension=None):
-        if extension is None:
-            extension = ['txt','md']
-        ext = file_name.split('.')[-1]
-        return ext in extension
+    def is_valid_extension(file_name: str, extensions=None) -> bool:
+        """نتيجة هذه الدالة ستكون boolean"""
+        if extensions is None:
+            extensions = ['TXT','MD', 'PDF']
+        suffix = Path(file_name).suffix.lstrip('.').lower()
+        return bool(suffix) and suffix in [e.lower() for e in extensions]
 
     @classmethod
     def full_path(cls,folder,file_name):
-        return os.path.join(folder,file_name)
+        return str(Path(folder) / file_name)
 
-    def read(self):
-        if not os.path.isfile(self._file_path):
+    def read(self) -> Optional[str]:
+        """يرجع محتوى الملف و اذا لم يوجد يرجع None"""
+        if not self._file_path.is_file():
             return None
-        with open(self._file_path, 'r', encoding='utf-8') as f:
-            return f.read()
+        try:
+            with open(self._file_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            print(f'Error reading file: {e}')
+            return None
 
-    def write(self, content):
-        self._ensure_folder_exists()
-        with open(self._file_path, 'w', encoding='utf-8') as f:
-            f.write(content)
+    def write(self, content: str) -> bool:
+        """اذا نجح يرجع True اذا فشل يرجع False"""
+        try:
+            self._ensure_folder_exists()
+            with open(self._file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            return True
+        except Exception as e:
+            print(f'Error writing file: {e}')
+            return False
 
     def rename(self, new_path):
-        if os.path.exists(self._file_path):
-            folder = os.path.dirname(new_path)
-            if folder and not os.path.exists(folder):
-                os.makedirs(folder, exist_ok=True)
-            os.rename(self._file_path, new_path)
-            self._file_path = new_path
+        path = Path(self._file_path)
+        if path.exists():
+            new_path = Path(new_path)
+            new_path.parent.mkdir(parents=True, exist_ok=True)
+            if new_path.exists():
+                raise FileExistsError(f"Cannot rename: {new_path} already exists")
+            path.rename(new_path)
+            self._file_path = str(new_path)
         else:
             raise FileNotFoundError(f"No file to rename at {self._file_path}")
 
-    def delete(self):
-        if os.path.isfile(self._file_path):
-            os.remove(self._file_path)
-        else:
-            print(f"Warning: File does not exist: {self._file_path}")
-
+    def delete(self) -> bool:
+        """اذا نجح يرجع True اذا فشل يرجع False"""
+        path = Path(self._file_path)
+        try:
+            if path.is_file():
+                path.unlink()  # لحذف الملف
+                return True
+            return False #الملف غير موجود
+        except Exception as e:
+            print(f'Error deleting file: {e}')
+            return False
 
 
 class EncFileManager:
     def __init__(self, vault_folder='vault'):
-        self.vault_folder = vault_folder
-        if not os.path.exists(self.vault_folder):
-            os.makedirs(self.vault_folder, exist_ok=True)
+        self.vault_folder = Path(vault_folder).resolve()
+        self.vault_folder.mkdir(parents=True, exist_ok=True)
 
-    def list_files(self):
-        """ارجاع قائمة الملفات في مجلد vault"""
-        return [f for f in os.listdir(self.vault_folder) if os.path.isfile(os.path.join(self.vault_folder, f))]
+    def _safe_path(self, file_name: str) ->Path:
+        """تحقق من أن الملف داخل مجلد vault فقط"""
+        file_path = (self.vault_folder / file_name).resolve()
+        if not str(file_path).startswith(str(self.vault_folder)):
+            raise ValueError("Access outside vault folder is not allowed")
+        return file_path
 
-    def add_file(self, file_name, content=""):
-        """اضافة ملف جديد داخل vault"""
-        if not FileHandler.is_valid_extension(file_name, ["txt", "md"]):
-            print("Invalid file extension!")
-            return None
-        return FileHandler(os.path.join(self.vault_folder, file_name)).write(content)
-
-    def read_file(self, file_name):
-        """قراءة محتوى ملف محدد"""
+    def list_files(self) -> list:
+        """إرجاع قائمة الملفات (قد تكون فارغة)."""
         try:
-            return FileHandler(os.path.join(self.vault_folder, file_name)).read()
-        except FileNotFoundError:
-            print(f"File {file_name} not found!")
-            return ""
+            return [f.name for f in self.vault_folder.iterdir() if f.is_file()]
+        except Exception as e:
+            print(f'Error listing files: {e}')
+            return []
 
-    def delete_file(self, file_name):
-        path = os.path.join(self.vault_folder, file_name)
-        if os.path.isfile(path):
-            FileHandler(path).delete()
-        else:
-            print(f"Warning: {file_name} does not exist.")
+    def add_file(self, file_name: str, content:str ="") -> bool:
+        """اضافة ملف جديد داخل vault"""
+        file_path = self._safe_path(file_name)
+
+        # تحقق من الامتداد
+        if not FileHandler.is_valid_extension(file_name):
+            print("Invalid file extension!")
+            return False
+
+        handler = FileHandler(file_path)
+        return handler.write(content)  # boolean
+
+    def read_file(self, file_name: str) -> Optional[str]:
+        """قراءة محتوى ملف محدد"""
+        file_path = self._safe_path(file_name)
+        handler = FileHandler(file_path)
+        return handler.read()  # string or None
+
+    def delete_file(self, file_name: str) ->bool:
+        file_path = self._safe_path(file_name)
+        handler = FileHandler(file_path)
+        return handler.delete()  # boolean
 
 
     @property
     def file_count(self):
         """ارجاع عدد الملفات في المجلد وقمت بها بسبب سهولة الاستخدام و اضافة ميزات مع امكانية تعديل و الامان لاننا لم نعرف setter"""
         return len(self.list_files())
-
-
-
-
-
 
 
 
