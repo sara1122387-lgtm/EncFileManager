@@ -31,6 +31,7 @@ EncFileManager/
 ├── README.md ([Sara Mohammed])
 └── .gitignore ([Sara Mohammed])
 
+
 ### Key Updates
 **Phase 2:**
 - Replaced string paths with `pathlib.Path` in FileHandler to prevent errors like AttributeError in read().
@@ -38,6 +39,33 @@ EncFileManager/
 - Added `_safe_path()` method in EncFileManager to prevent access outside the vault folder.
 - Unified file extension checks to support additional types (`txt`, `md`, `pdf`).
 - Added proper docstrings and comments for clarity.
+
+
+### Progress - Phase 1
+
+✅ Built project skeleton ([Sara Mohammed])
+✅ Created FileHandler & EncFileManager classes ([Sara Mohammed])
+✅ Implemented basic file operations ([Sara Mohammed])
+
+
+### Progress - Phase 2
+
+✅ Refactored FileHandler to use pathlib.Path ([Sara Mohammed])  
+✅ Enhanced EncFileManager with _safe_path() for security ([Sara Mohammed])  
+✅ Unified file extension validation ([Sara Mohammed])  
+✅ Added comments and docstrings for clarity ([Sara Mohammed])
+
+
+ ## Author / License
+**Lead Developer & Owner:** Sara Mohammed Abd AL_Zahra  
+All code and documentation are authored by Sara Mohammed unless otherwise noted.  
+Recommended license for public GitHub: MIT License or Creative Commons for documentation.
+
+---
+
+Notes
+This is an educational project built step-by-step for learning purposes.
+Future phases will include encryption, GUI, and advanced features.
 
 ## Getting Started
 ```bash
@@ -49,29 +77,3 @@ pip install -r requirements.txt
 
 # Run the main program
 python main.py
-
-
-Progress - Phase 1
-
-✅ Built project skeleton ([Sara Mohammed])
-✅ Created FileHandler & EncFileManager classes ([Sara Mohammed])
-✅ Implemented basic file operations ([Sara Mohammed])
-
-
-Progress - Phase 2
-
-✅ Refactored FileHandler to use pathlib.Path ([Sara Mohammed])  
-✅ Enhanced EncFileManager with _safe_path() for security ([Sara Mohammed])  
-✅ Unified file extension validation ([Sara Mohammed])  
-✅ Added comments and docstrings for clarity ([Sara Mohammed])
-
-
- Author / License
-Lead Developer & Owner: Sara Mohammed Abd AL_Zahra  
-All code and documentation are authored by Sara Mohammed unless otherwise noted.  
-
-Recommended license for public GitHub: MIT License or Creative Commons for documentation.
-
-Notes
-This is an educational project built step-by-step for learning purposes.
-Future phases will include encryption, GUI, and advanced features.
