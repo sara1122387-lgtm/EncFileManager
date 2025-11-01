@@ -11,7 +11,25 @@ Future phases will include encryption, advanced features, and contributions from
 ## Project Stage - Phase 2
 **Phase 2 (Refactor & Stability Improvements)** – The file handling classes have been refactored for better reliability and maintainability.  
 Future phases will include encryption, GUI, and advanced features.
+### Key Updates
+- Replaced string paths with `pathlib.Path` in FileHandler to prevent errors like AttributeError in read().
+- Improved folder creation and rename operations to handle non-existing folders and avoid overwriting existing files.
+- Added `_safe_path()` method in EncFileManager to prevent access outside the vault folder.
+- Unified file extension checks to support additional types (`txt`, `md`, `pdf`).
+- Added proper docstrings and comments for clarity.
 
+## Project Stage - Phase 3
+**Phase 3 (Simple Encryption Implementation)** – Added basic file encryption/decryption functionality.
+### Key Updates
+- Introduced `Encryptor` class with Caesar Cipher.
+- Added `caesar_encrypt()` and `caesar_decrypt()` methods.
+- Demonstrated encryption/decryption for files in the `vault` folder.
+- Prepared the code for future extension using inheritance and multiple encryption algorithms.
+
+### Notes
+- This phase focuses on understanding encryption logic (strings vs bytes, shifting characters).
+- XOR or other algorithms can be added in future phases.
+- Current encryption only works on text files (`txt`).
 
 ## Team
 - **[Sara Mohammed Abd AL_Zahra]** – Lead Developer & Coordinator
@@ -30,15 +48,6 @@ EncFileManager/
 ├── requirements.txt ([Sara Mohammed])
 ├── README.md ([Sara Mohammed])
 └── .gitignore ([Sara Mohammed])
-
-
-### Key Updates
-**Phase 2:**
-- Replaced string paths with `pathlib.Path` in FileHandler to prevent errors like AttributeError in read().
-- Improved folder creation and rename operations to handle non-existing folders and avoid overwriting existing files.
-- Added `_safe_path()` method in EncFileManager to prevent access outside the vault folder.
-- Unified file extension checks to support additional types (`txt`, `md`, `pdf`).
-- Added proper docstrings and comments for clarity.
 
 
 ### Progress - Phase 1
