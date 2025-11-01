@@ -64,6 +64,14 @@ EncFileManager/
 ✅ Unified file extension validation ([Sara Mohammed])  
 ✅ Added comments and docstrings for clarity ([Sara Mohammed])
 
+## Progress - Phase 3: Simple Encryption
+
+✅ Implemented `Encryptor` class for Caesar Cipher encryption ([Sara Mohammed])  
+✅ Added `caesar_encrypt()` and `caesar_decrypt()` methods ([Sara Mohammed])  
+✅ Created `test_encryptor.py` to verify encryption/decryption works on sample text ([Sara Mohammed])  
+✅ Ensured encryption works on plain text files in the vault folder ([Sara Mohammed])  
+✅ Prepared code structure for future inheritance and additional encryption algorithms ([Sara Mohammed])
+
 
  ## Author / License
 **Lead Developer & Owner:** Sara Mohammed Abd AL_Zahra  
