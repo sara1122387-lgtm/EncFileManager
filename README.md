@@ -50,7 +50,7 @@ Future phases will include encryption, GUI, and advanced features.
 
 ## Team
 - **[Sara Mohammed Abd AL_Zahra]** – Lead Developer & Coordinator
-- **[Sara Ahmed]** – Testing Support
+- **[Sara Ahmed]** – Team Member (included as per course requirement)
 
 ## Project Goal
 Build a simple file management system in Python to:
@@ -84,7 +84,7 @@ EncFileManager/
 ✅ Added comments and docstrings for clarity ([Sara Mohammed])
 
 
-### Progress - Phase 2
+### Progress - Phase 3
 
 ✅ Created Encryptor class implementing Caesar Cipher ([Sara Mohammed])
 ✅ Added caesar_encrypt() and caesar_decrypt() methods ([Sara Mohammed])
