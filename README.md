@@ -1,4 +1,4 @@
-# EncFileManager - Phase 1 (Project Skeleton)
+# EncFileManager
 
 ## Course
 **OOP - Object-Oriented Programming**  
@@ -50,7 +50,7 @@ Future phases will include encryption, GUI, and advanced features.
 
 ## Team
 - **[Sara Mohammed Abd AL_Zahra]** – Lead Developer & Coordinator
-- **[Sara Ahmed]** – Testing Support
+- **[Sara Ahmed]** – Team Member (included as per course requirement)
 
 ## Project Goal
 Build a simple file management system in Python to:
