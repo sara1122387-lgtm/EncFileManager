@@ -1,4 +1,7 @@
+from cgitb import handler
+
 from cryptography.fernet import Fernet
+from encryptor import CaesarEncryptor
 from typing import Optional
 from pathlib import Path
 
@@ -77,10 +80,33 @@ class FileHandler:
             return False
 
 
+class EncryptedFileHandler(FileHandler):
+    """
+        Extends FileHandler to support simple encryption/decryption.
+        Initially supports Caesar Cipher (educational purpose only).
+        """
+    def __init__(self, file_path, encryptor=None):
+        super().__init__(file_path)
+        self.encryptor = encryptor   # يمكن أن يكون CaesarEncryptor
+
+    def write_encrypted(self, content: str) -> bool:
+        if self.encryptor:
+            encrypted_content = self.encryptor.caesar_encrypt(content, self.encryptor.key)
+            return super().write(encrypted_content)
+        return self.write(content)
+
+    def read_decrypted(self) -> str:
+        content = self.read()
+        if self.encryptor and content:
+            return self.encryptor.caesar_decrypt(content, self.encryptor.key)
+        return content
+
+
 class EncFileManager:
-    def __init__(self, vault_folder='vault'):
+    def __init__(self, vault_folder='vault', encryptor=None):
         self.vault_folder = Path(vault_folder).resolve()
         self.vault_folder.mkdir(parents=True, exist_ok=True)
+        self.encryptor = encryptor
 
     def _safe_path(self, file_name: str) ->Path:
         """تحقق من أن الملف داخل مجلد vault فقط"""
@@ -106,14 +132,24 @@ class EncFileManager:
             print("Invalid file extension!")
             return False
 
-        handler = FileHandler(file_path)
-        return handler.write(content)  # boolean
+        # استخدام EncryptedFileHandler إذا تم تمرير encryptor
+        if self.encryptor:
+            handler = EncryptedFileHandler(file_path, self.encryptor)
+            return handler.write_encrypted(content)  # boolean
+        else:
+            handler = FileHandler(file_path)
+            return handler.write(content)
 
     def read_file(self, file_name: str) -> Optional[str]:
         """قراءة محتوى ملف محدد"""
         file_path = self._safe_path(file_name)
-        handler = FileHandler(file_path)
-        return handler.read()  # string or None
+
+        if self.encryptor:
+            handler = EncryptedFileHandler(file_path, self.encryptor)
+            return handler.read_decrypted() # string or None
+        else:
+            handler = FileHandler(file_path)
+            return handler.read()
 
     def delete_file(self, file_name: str) ->bool:
         file_path = self._safe_path(file_name)

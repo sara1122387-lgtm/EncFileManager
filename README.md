@@ -31,6 +31,23 @@ Future phases will include encryption, GUI, and advanced features.
 - XOR or other algorithms can be added in future phases.
 - Current encryption only works on text files (`txt`).
 
+## Project Stage - Phase 4
+**Phase 4 (Integration & Encrypted File Handling Extension)** – This phase focuses on integrating encryption logic into the file management system and improving its modularity and usability.
+### Key Updates
+- Added EncryptedFileHandler class that extends FileHandler to support encrypted read/write operations.
+- Integrated the CaesarEncryptor class for simple encryption and decryption of text files.
+- Made encryption optional — the handler works in normal or encrypted mode depending on whether an encryptor object is provided.
+- Improved code reusability by using super() calls and consistent return values for all I/O operations.
+- Added type hints and detailed docstrings for better readability and future maintainability.
+- Prepared the project for future integration of multiple encryption algorithms (e.g., XOR, AES).
+
+### Notes
+- The encryption system is now fully integrated into the core file management workflow.
+- Users can now choose between normal and encrypted file operations without changing the main code logic.
+- This phase emphasizes object-oriented design and inheritance-based extensibility.
+- Next phases will explore GUI interaction and stronger encryption algorithms.
+
+
 ## Team
 - **[Sara Mohammed Abd AL_Zahra]** – Lead Developer & Coordinator
 - **[Sara Ahmed]** – Testing Support
@@ -45,6 +62,8 @@ Build a simple file management system in Python to:
 EncFileManager/
 ├── main.py # Main interface ([Sara Mohammed])
 ├── core.py # Core classes ([Sara Mohammed])
+├── encryptor.py # Encryption classes ([Sara Mohammed])
+├── test_encryptor.py # Checking encryption classes ([Sara Mohammed])
 ├── requirements.txt ([Sara Mohammed])
 ├── README.md ([Sara Mohammed])
 └── .gitignore ([Sara Mohammed])
@@ -64,6 +83,22 @@ EncFileManager/
 ✅ Unified file extension validation ([Sara Mohammed])  
 ✅ Added comments and docstrings for clarity ([Sara Mohammed])
 
+
+### Progress - Phase 2
+
+✅ Created Encryptor class implementing Caesar Cipher ([Sara Mohammed])
+✅ Added caesar_encrypt() and caesar_decrypt() methods ([Sara Mohammed])
+✅ Tested encryption and decryption on files within the vault folder ([Sara Mohammed])
+✅ Structured project for future integration with core classes via inheritance ([Sara Mohammed])
+✅ Documented encryption logic and usage notes in code comments ([Sara Mohammed])
+
+
+### Progress - Phase 4
+
+✅ Created EncryptedFileHandler class ([Sara Mohammed])
+✅ Integrated encryption functionality with FileHandler ([Sara Mohammed])
+✅ Improved flexibility and optional encryption use ([Sara Mohammed])
+✅ Added detailed comments, docstrings, and type hints ([Sara Mohammed])
 
  ## Author / License
 **Lead Developer & Owner:** Sara Mohammed Abd AL_Zahra  
