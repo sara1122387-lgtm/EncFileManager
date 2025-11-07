@@ -1,4 +1,4 @@
-# EncFileManager - Phase 1 (Project Skeleton)
+# EncFileManager 
 
 ## Course
 **OOP - Object-Oriented Programming**  
@@ -50,13 +50,14 @@ Future phases will include encryption, GUI, and advanced features.
 
 ## Team
 - **[Sara Mohammed Abd AL_Zahra]** – Lead Developer & Coordinator
-- **[Sara Ahmed]** – Testing Support
+- **[Sara Ahmed]** – Team Member (added for course requirement; no active contributions)
 
 ## Project Goal
-Build a simple file management system in Python to:
-- Learn file handling (read, write, delete, rename)
-- Practice OOP basics (classes, methods, properties)
-- Prepare the project for future encryption features
+Create a modular Python file management system that:
+- Handles files securely (read, write, delete, rename)
+- Demonstrates Object-Oriented Programming principles
+- Implements basic encryption to illustrate encryption logic
+- Is structured for future expansion with advanced features
 
 ## Project Structure
 EncFileManager/
@@ -84,7 +85,7 @@ EncFileManager/
 ✅ Added comments and docstrings for clarity ([Sara Mohammed])
 
 
-### Progress - Phase 2
+### Progress - Phase 3
 
 ✅ Created Encryptor class implementing Caesar Cipher ([Sara Mohammed])
 ✅ Added caesar_encrypt() and caesar_decrypt() methods ([Sara Mohammed])
