@@ -1,4 +1,5 @@
-# EncFileManager 
+#### EncFileManager
+=======
 
 ## Course
 **OOP - Object-Oriented Programming**  
@@ -88,7 +89,11 @@ Phase 6 (Polymorphism & Strategy Pattern) – This phase focuses on professional
 
 ## Team
 - **[Sara Mohammed Abd AL_Zahra]** – Lead Developer & Coordinator
+<<<<<<< HEAD
 - **[Sara Ahmed]** – Team Member (added for course requirement; no active contributions)
+=======
+- **[Sara Ahmed]** – Team Member (included as per course requirement)
+>>>>>>> 8a69f45859b60abae8816d5bd3eaefeb0bc40c5b
 
 ## Project Goal
 Create a modular Python file management system that:
