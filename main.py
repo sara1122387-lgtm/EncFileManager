@@ -1,5 +1,5 @@
 from core import FileHandler, EncFileManager, EncryptedFileHandler
-from encryptor import CaesarEncryptor
+from encryptors import CaesarEncryptor
 
 # # ==========================
 # # اختبار FileHandler
@@ -92,17 +92,22 @@ from encryptor import CaesarEncryptor
 # print("Decrypted content:", content)
 
 
-encryptor = CaesarEncryptor(key=4)
-vault = EncFileManager(encryptor=encryptor)
+# encryptor = CaesarEncryptor(key=4)
+# vault = EncFileManager(encryptor=encryptor)
+#
+# vault.add_file("file1.txt", "Hello Phase4!")
+# vault.add_file("file2.txt", "Encrypted Vault test")
+#
+# for f in vault.list_files():
+#     content = vault.read_file(f)
+#     print(f"{f}: {content}")
+#
+# vault.delete_file("file1.txt")
+# print("After deletion:", vault.list_files())
 
-vault.add_file("file1.txt", "Hello Phase4!")
-vault.add_file("file2.txt", "Encrypted Vault test")
+from FernetEncryptor import FernetEncryptor
+manager = EncFileManager(encryptor=FernetEncryptor())
 
-for f in vault.list_files():
-    content = vault.read_file(f)
-    print(f"{f}: {content}")
-
-vault.delete_file("file1.txt")
-print("After deletion:", vault.list_files())
-
+manager.add_file("note.txt", "Hello secure world!")
+print(manager.read_file("note.txt"))
 

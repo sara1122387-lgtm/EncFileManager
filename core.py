@@ -1,9 +1,6 @@
-from cgitb import handler
-
-from cryptography.fernet import Fernet
-from encryptor import CaesarEncryptor
 from typing import Optional
 from pathlib import Path
+
 
 class FileHandler:
     def __init__(self, file_path):
@@ -63,7 +60,7 @@ class FileHandler:
             if new_path.exists():
                 raise FileExistsError(f"Cannot rename: {new_path} already exists")
             path.rename(new_path)
-            self._file_path = str(new_path)
+            self._file_path = new_path
         else:
             raise FileNotFoundError(f"No file to rename at {self._file_path}")
 
@@ -79,27 +76,6 @@ class FileHandler:
             print(f'Error deleting file: {e}')
             return False
 
-
-class EncryptedFileHandler(FileHandler):
-    """
-        Extends FileHandler to support simple encryption/decryption.
-        Initially supports Caesar Cipher (educational purpose only).
-        """
-    def __init__(self, file_path, encryptor=None):
-        super().__init__(file_path)
-        self.encryptor = encryptor   # يمكن أن يكون CaesarEncryptor
-
-    def write_encrypted(self, content: str) -> bool:
-        if self.encryptor:
-            encrypted_content = self.encryptor.caesar_encrypt(content, self.encryptor.key)
-            return super().write(encrypted_content)
-        return self.write(content)
-
-    def read_decrypted(self) -> str:
-        content = self.read()
-        if self.encryptor and content:
-            return self.encryptor.caesar_decrypt(content, self.encryptor.key)
-        return content
 
 
 class EncFileManager:
@@ -132,24 +108,35 @@ class EncFileManager:
             print("Invalid file extension!")
             return False
 
-        # استخدام EncryptedFileHandler إذا تم تمرير encryptor
+        data = content.encode("utf-8")
+
         if self.encryptor:
-            handler = EncryptedFileHandler(file_path, self.encryptor)
-            return handler.write_encrypted(content)  # boolean
-        else:
-            handler = FileHandler(file_path)
-            return handler.write(content)
+            data = self.encryptor.encrypt(data)
+
+        try:
+            with open(file_path, "wb") as f:
+                f.write(data)
+            return True
+        except Exception:
+            return False
+
+        # استخدام EncryptedFileHandler إذا تم تمرير encryptor
 
     def read_file(self, file_name: str) -> Optional[str]:
         """قراءة محتوى ملف محدد"""
         file_path = self._safe_path(file_name)
 
-        if self.encryptor:
-            handler = EncryptedFileHandler(file_path, self.encryptor)
-            return handler.read_decrypted() # string or None
-        else:
-            handler = FileHandler(file_path)
-            return handler.read()
+        try:
+            with open(file_path, "rb") as f:
+                data= f.read()
+
+            if self.encryptor:
+                data = self.encryptor.decrypt(data)
+
+            return data.decode("utf-8")
+        except Exception:
+            return None
+
 
     def delete_file(self, file_name: str) ->bool:
         file_path = self._safe_path(file_name)

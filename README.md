@@ -42,10 +42,48 @@ Future phases will include encryption, GUI, and advanced features.
 - Prepared the project for future integration of multiple encryption algorithms (e.g., XOR, AES).
 
 ### Notes
+
 - The encryption system is now fully integrated into the core file management workflow.
 - Users can now choose between normal and encrypted file operations without changing the main code logic.
 - This phase emphasizes object-oriented design and inheritance-based extensibility.
 - Next phases will explore GUI interaction and stronger encryption algorithms.
+
+## Project Stage - Phase 5 
+**Phase 5 (Validation, Testing & Internal Utilities)** – This phase focuses on verifying system stability, adding automated checks, and ensuring that all previous phases integrate correctly.
+### Key Updates
+- Added SystemValidator class to perform integrity checks on vault folder, file operations, and encryption components. 
+- Implemented a simple readiness test to ensure:
+  - Required folders exist 
+  - FileHandler operations work without throwing exceptions 
+- Encryption/decryption pipeline runs successfully 
+- Introduced internal utilities for cleaner logging and debug messages. 
+- Prepared the project for GUI integration and stronger cryptographic algorithms in the next stage.
+
+### Notes 
+
+- This phase does not introduce new user
+- facing features; it strengthens the internal structure. 
+- The goal is to confirm that Phase 1–4 are stable, modular, and safe to extend.
+- The validation system can be expanded later to include unit tests (pytest) or auto-check scripts.
+
+## Project Stage - Phase 6
+Phase 6 (Polymorphism & Strategy Pattern) – This phase focuses on professionalizing the encryption system using polymorphism and a strategy pattern, allowing multiple encryption algorithms to be used interchangeably.
+### Key Updates
+- Introduced BaseEncryptor interface using ABC (Abstract Base Class) for a common encrypt/decrypt API.
+- Refactored CaesarEncryptor to inherit from BaseEncryptor and implement required methods.
+- Created XOREncryptor as a new option, inheriting from BaseEncryptor, supporting XOR-based encryption for demonstration.
+- Updated FernetEncryptor to implement BaseEncryptor, supporting bytes-based encryption with Fernet (AES-128 + HMAC).
+- Modified EncFileManager to use any encryptor via the unified interface:
+  - self.encryptor.encrypt(data)
+  - self.encryptor.decrypt(data)
+- Eliminated tight coupling: EncFileManager no longer depends on specific encryption classes, allowing easy swapping of algorithms.
+- Prepared the project for future expansion with additional encryptors or GUI integration.
+
+### Notes
+- This phase emphasizes OOP best practices, clean separation of concerns, and code extensibility.
+- Users can switch encryption methods without modifying core file management logic.
+- Polymorphism ensures the same EncFileManager code works regardless of the underlying encryption algorithm.
+- Future phases may add configuration options to select encryption strategies at runtime.
 
 
 ## Team
@@ -64,9 +102,13 @@ EncFileManager/
 ├── main.py # Main interface ([Sara Mohammed])
 ├── core.py # Core classes ([Sara Mohammed])
 ├── encryptor.py # Encryption classes ([Sara Mohammed])
+├── base_encryptor.py ([Sara Mohammed])
 ├── test_encryptor.py # Checking encryption classes ([Sara Mohammed])
 ├── requirements.txt ([Sara Mohammed])
 ├── README.md ([Sara Mohammed])
+├── FernetEncryptor.py ([Sara Mohammed])
+├── test_phase5.py ([Sara Mohammed])
+├── test_phase6.py ([Sara Mohammed])
 └── .gitignore ([Sara Mohammed])
 
 
@@ -100,6 +142,27 @@ EncFileManager/
 ✅ Integrated encryption functionality with FileHandler ([Sara Mohammed])
 ✅ Improved flexibility and optional encryption use ([Sara Mohammed])
 ✅ Added detailed comments, docstrings, and type hints ([Sara Mohammed])
+
+
+### Progress - Phase 5
+
+✅ Implemented FernetEncryptor class using Fernet (AES-128 + HMAC) for real encryption ([Sara Mohammed])
+✅ Added secure key generation and automatic loading/saving of encryption keys ([Sara Mohammed])
+✅ Updated EncFileManager to support pluggable encryption via encryptor=FernetEncryptor() ([Sara Mohammed])
+✅ Modified file operations to handle bytes-based encryption instead of plain text ([Sara Mohammed])
+✅ Added readiness test ensuring folder structure, FileHandler stability, and full encryption/decryption pipeline validation ([Sara Mohammed])
+✅ Documented encryption workflow, key handling, and integration notes for future contributors ([Sara Mohammed])
+
+### Progress - Phase 5
+
+✅ Implemented BaseEncryptor interface using ABC for a unified encryption API ([Sara Mohammed])
+✅ Refactored CaesarEncryptor to inherit from BaseEncryptor ([Sara Mohammed])
+✅ Created XOREncryptor class as an alternative encryption strategy ([Sara Mohammed])
+✅ Updated FernetEncryptor to implement BaseEncryptor ([Sara Mohammed])
+✅ Modified EncFileManager to use polymorphism: support multiple encryption algorithms via strategy pattern ([Sara Mohammed])
+✅ Tested all encryptors with EncFileManager ensuring encryption/decryption works interchangeably ([Sara Mohammed])
+✅ Documented strategy pattern usage, class hierarchy, and guidelines for adding new encryptors ([Sara Mohammed])
+
 
  ## Author / License
 **Lead Developer & Owner:** Sara Mohammed Abd AL_Zahra  

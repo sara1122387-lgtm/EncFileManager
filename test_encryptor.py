@@ -1,4 +1,4 @@
-from encryptor import CaesarEncryptor
+from encryptors import CaesarEncryptor
 from core import EncFileManager
 
 vault = EncFileManager()
