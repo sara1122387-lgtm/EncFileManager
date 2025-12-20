@@ -78,21 +78,21 @@ class FileHandler:
             print(f'Error deleting file: {e}')
             return False
 
-        def __str__(self):
-            return f"FileHandler({self.file_path})"
+    def __str__(self):
+        return f"FileHandler({self.file_path})"
 
-        def __repr__(self):
-            return f"<FileHandler path={self.file_path}>"
+    def __repr__(self):
+        return f"<FileHandler path={self.file_path}>"
 
-        def __eq__(self, other):
-            if isinstance(other, FileHandler):
-                return self.file_path == other.file_path
-            return False
+    def __eq__(self, other):
+        if isinstance(other, FileHandler):
+            return self.file_path == other.file_path
+        return False
 
-        def __lt__(self, other):
-            if isinstance(other, FileHandler):
-                return str(self.file_path) < str(other.file_path)
-            return NotImplemented
+    def __lt__(self, other):
+        if isinstance(other, FileHandler):
+            return str(self.file_path) < str(other.file_path)
+        return NotImplemented
 
 
 class EncFileManager:
