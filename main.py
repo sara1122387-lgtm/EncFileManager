@@ -1,4 +1,4 @@
-from core import FileHandler, EncFileManager, EncryptedFileHandler
+from core import FileHandler, EncFileManager
 from encryptors import CaesarEncryptor
 
 # # ==========================
@@ -105,9 +105,69 @@ from encryptors import CaesarEncryptor
 # vault.delete_file("file1.txt")
 # print("After deletion:", vault.list_files())
 
-from FernetEncryptor import FernetEncryptor
-manager = EncFileManager(encryptor=FernetEncryptor())
+# from FernetEncryptor import FernetEncryptor
+# manager = EncFileManager(encryptor=FernetEncryptor())
+#
+# manager.add_file("note.txt", "Hello secure world!")
+# print(manager.read_file("note.txt"))
 
-manager.add_file("note.txt", "Hello secure world!")
-print(manager.read_file("note.txt"))
+from core import FileHandler, EncFileManager
+from FernetEncryptor import FernetEncryptor
+import os
+import shutil
+
+# إعداد بيئة اختبار مؤقتة
+TEST_VAULT = "test_vault"
+if os.path.exists(TEST_VAULT):
+    shutil.rmtree(TEST_VAULT)
+
+# تهيئة Encryptor و Manager
+encryptor = FernetEncryptor(key_path='test_secret.key')
+manager = EncFileManager(vault_folder=TEST_VAULT, encryptor=encryptor)
+
+# 1. إضافة ملفات باستخدام __setitem__
+manager["file1.txt"] = "Hello World!"
+manager["file2.txt"] = "Python is fun"
+manager["file3.txt"] = "Encrypted content"
+
+# 2. قراءة الملفات باستخدام __getitem__
+print(manager["file1.txt"])  # يجب طباعة: Hello World!
+print(manager["file2.txt"])  # يجب طباعة: Python is fun
+
+# 3. التحقق من __contains__
+print("file1.txt" in manager)  # True
+print("not_exist.txt" in manager)  # False
+
+# 4. التحقق من __len__
+print(len(manager))  # 3
+
+# 5. طباعة __str__ و __repr__
+print(manager)  # EncFileManager with 3 files in '...'
+file_handler = FileHandler(os.path.join(TEST_VAULT, "file1.txt"))
+print(str(file_handler))
+print(repr(file_handler))
+
+# 6. اختبار المقارنات __eq__ و __lt__
+file_a = FileHandler(os.path.join(TEST_VAULT, "file1.txt"))
+file_b = FileHandler(os.path.join(TEST_VAULT, "file2.txt"))
+file_c = FileHandler(os.path.join(TEST_VAULT, "file1.txt"))
+
+print(file_a == file_b)  # False
+print(file_a == file_c)  # True
+print(file_a < file_b)   # True إذا كان اسم file1 < file2
+
+# 7. اختبار حذف الملفات
+manager.delete_file("file1.txt")
+manager.delete_file("file2.txt")
+manager.delete_file("file3.txt")
+print(len(manager))  # 0
+
+# تنظيف الملفات المؤقتة
+if os.path.exists("test_secret.key"):
+    os.remove("test_secret.key")
+if os.path.exists(TEST_VAULT):
+    shutil.rmtree(TEST_VAULT)
+
+print("✅ جميع Special Methods تم اختبارها بنجاح")
+
 

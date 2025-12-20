@@ -78,6 +78,21 @@ class FileHandler:
             print(f'Error deleting file: {e}')
             return False
 
+        def __str__(self):
+            return f"FileHandler({self.file_path})"
+
+        def __repr__(self):
+            return f"<FileHandler path={self.file_path}>"
+
+        def __eq__(self, other):
+            if isinstance(other, FileHandler):
+                return self.file_path == other.file_path
+            return False
+
+        def __lt__(self, other):
+            if isinstance(other, FileHandler):
+                return str(self.file_path) < str(other.file_path)
+            return NotImplemented
 
 
 class EncFileManager:
@@ -151,7 +166,20 @@ class EncFileManager:
         """ارجاع عدد الملفات في المجلد وقمت بها بسبب سهولة الاستخدام و اضافة ميزات مع امكانية تعديل و الامان لاننا لم نعرف setter"""
         return len(self.list_files())
 
+    def __str__(self):
+        return f"EncFileManager with {len(self)} files in '{self.vault_folder}'"
 
+    def __len__(self):
+        return self.file_count
+
+    def __getitem__(self, file_name):
+        return self.read_file(file_name)
+
+    def __setitem__(self, file_name, content):
+        self.add_file(file_name, content)
+
+    def __contains__(self, file_name):
+        return file_name in self.list_files()
 
 
 
