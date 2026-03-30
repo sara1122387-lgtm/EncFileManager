@@ -1,113 +1,91 @@
-from core import FileHandler, EncFileManager, EncryptedFileHandler
-from encryptors import CaesarEncryptor
-
-# # ==========================
-# # اختبار FileHandler
-# # ==========================
+#الفقرة الأولى\مراجعة وتحقق
+# from encryption_registry import EncryptionRegistry
+# from encryptors import CaesarEncryptor, XOREncryptor
+# from FernetEncryptor import FernetEncryptor
 #
-# # التحقق من دالة is_valid_extension
-# print(FileHandler.is_valid_extension('file.txt'))      # True
-# print(FileHandler.is_valid_extension('document'))      # False
+# # إنشاء registry
+# registry = EncryptionRegistry()
 #
-# # إنشاء كائن FileHandler (Path يتحول داخل __init__)
-# file = FileHandler("vault/test.txt")
+# # تسجيل جميع الاستراتيجيات
+# registry.register(CaesarEncryptor())
+# registry.register(XOREncryptor())
+# registry.register(FernetEncryptor())
 #
-# # كتابة نص
-# file.write("Hello world!")
+# # البيانات التجريبية
+# original_data = b"Hello OOP2"
 #
-# # قراءة النص
-# print("Content:", file.read())
+# print("=== Running Full Encryption Test ===\n")
 #
-# # تغيير الاسم إلى اسم جديد
-# try:
-#     file.rename("vault/hello.txt")
-# except FileExistsError:
-#     print("Cannot rename: target file already exists")
+# for encryptor in registry.encryptors:
+#     print(f"Testing: {encryptor.name}")
 #
-# # قراءة النص بعد التغيير
-# print("Content after rename:", file.read())
+#     encrypted = encryptor.encrypt(original_data)
+#     decrypted = encryptor.decrypt(encrypted)
 #
-# # حذف الملف
-# file.delete()
-#
-# # ==========================
-# # اختبار EncFileManager
-# # ==========================
-# vault = EncFileManager()
-#
-# # إضافة ملفات
-# vault.add_file("test1.txt", "Hello Vault!")
-# vault.add_file("test2.txt", "Second file content")
-#
-# # عرض الملفات
-# print("Files in vault:", vault.list_files())
-#
-# # قراءة محتوى ملف
-# print("Content of test1.txt:", vault.read_file("test1.txt"))
-#
-# # حذف ملف
-# vault.delete_file("test1.txt")
-# print("Files after deletion:", vault.list_files())
-#
-# # عدد الملفات
-# print("Number of files in vault:", vault.file_count)
-#
-# # ==========================
-# # اختبار إضافة ملفات صحيحة وخاطئة
-# # ==========================
-# # إضافة ملف صحيح الامتداد
-# vault.add_file("test.txt", "Hello world!")
-#
-# # محاولة إضافة ملف خاطئ الامتداد
-# vault.add_file("badfile.exe", "Should not work")
-#
-# # قراءة الملف
-# content = vault.read_file("test.txt")
-# print("Content read:", content)
-#
-# # حذف الملف
-# vault.delete_file("test.txt")
-#
-# # محاولة قراءة بعد الحذف لتأكيد أن الملف اختفى
-# content_after_delete = vault.read_file("test.txt")
-# print("Content after delete:", content_after_delete)
+#     if decrypted == original_data:
+#         print("✔ Success\n")
+#     else:
+#         print("✘ Failed\n")
 
 
-# encryptor = CaesarEncryptor(key=3)
-# file = EncryptedFileHandler("vault/test_encrypted.txt", encryptor)
-# file.write_encrypted("Hello Phase4!")
-# encrypted = file.read()           # هذا نص مشفر
-# decrypted = file.read_decrypted() # هذا النص الأصلي
-# print("Encrypted:", encrypted)
-# print("Decrypted:", decrypted)
 
-# encryptor = CaesarEncryptor(key=5)
-# vault = EncFileManager(encryptor=encryptor)
+#الفقرة الثانية\ Pointer
+# from encryption_registry import EncryptionRegistry
+# from encryptors import CaesarEncryptor, XOREncryptor
+# from FernetEncryptor import FernetEncryptor
+# from core import EncFileManager
+
+# registry = EncryptionRegistry()
 #
-# # إضافة ملف مشفر
-# vault.add_file("secret.txt", "This is Phase4!")
+# registry.register(CaesarEncryptor())
+# registry.register(XOREncryptor())
+# registry.register(FernetEncryptor())
+
+# نفس الكائن
+# shared_encryptor = registry.get_encryptor("xor")
 #
-# # قراءة الملف مفكوك التشفير
-# content = vault.read_file("secret.txt")
-# print("Decrypted content:", content)
-
-
-# encryptor = CaesarEncryptor(key=4)
-# vault = EncFileManager(encryptor=encryptor)
+# manager1 = EncFileManager(encryptor=shared_encryptor)
+# manager2 = EncFileManager(encryptor=shared_encryptor)
 #
-# vault.add_file("file1.txt", "Hello Phase4!")
-# vault.add_file("file2.txt", "Encrypted Vault test")
+# print("Same object?", manager1.encryptor is manager2.encryptor)
 #
-# for f in vault.list_files():
-#     content = vault.read_file(f)
-#     print(f"{f}: {content}")
+# # تعديل داخلي (تجربة)
+# shared_encryptor.key = 99
 #
-# vault.delete_file("file1.txt")
-# print("After deletion:", vault.list_files())
+# print("Manager1 key:", manager1.encryptor.key)
+# print("Manager2 key:", manager2.encryptor.key)
 
-from FernetEncryptor import FernetEncryptor
-manager = EncFileManager(encryptor=FernetEncryptor())
 
-manager.add_file("note.txt", "Hello secure world!")
-print(manager.read_file("note.txt"))
+#الفقرة الثالثة\ Friend Function
+# from utils import inspect_file
+#
+# manager1.add_file("test.txt", "hello")
+#
+# handler = manager1._get_handler("test.txt")
+#
+# info = inspect_file(handler)
+#
+# print(info)
 
+
+
+#الفقرة الرابعة\ Advanced Operator Overloading
+
+from core import EncFileManager
+
+manager1 = EncFileManager(vault_folder="vault1")
+manager2 = EncFileManager(vault_folder="vault2")
+
+manager1.add_file("a.txt", "Hello")
+manager2.add_file("b.txt", "World")
+manager2.add_file("c.txt", "World")
+
+print(manager1)          # __str__
+print(manager2)
+
+print(manager1 < manager2)  # __lt__
+print(manager1 > manager2)  # __gt__
+
+merg = manager1 + manager2  # __add__
+
+print(merg)

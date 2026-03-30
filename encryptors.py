@@ -1,6 +1,8 @@
+#encryptors.py
 from base_encryptor import BaseEncryptor
 
 class CaesarEncryptor(BaseEncryptor):
+    name = "caesar"
     """
     Simple Caesar Cipher for text-based encryption.
      Not secure, for educational use only.
@@ -16,6 +18,7 @@ class CaesarEncryptor(BaseEncryptor):
 
 
 class XOREncryptor(BaseEncryptor):
+    name = "xor"
     """
         Simple XOR encryption.
         Not secure — educational demonstration only.
