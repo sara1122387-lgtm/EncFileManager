@@ -7,9 +7,13 @@ class EncryptionRegistry:
     def register(self, encryptor: BaseEncryptor):
         self.encryptors.append(encryptor)
 
-    def get_encryptor(self, name: str) -> BaseEncryptor | None:
+
+    def get_encryptor(self, name: str) -> BaseEncryptor:
         name = name.lower()
-        return next(
+        encryptor = next(
             filter(lambda e: e.name.lower() == name, self.encryptors),
             None
         )
+        if not encryptor:
+            raise ValueError(f"Encryptor '{name}' not found")
+        return encryptor

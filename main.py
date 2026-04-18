@@ -30,16 +30,16 @@
 
 
 #الفقرة الثانية\ Pointer
-# from encryption_registry import EncryptionRegistry
-# from encryptors import CaesarEncryptor, XOREncryptor
-# from FernetEncryptor import FernetEncryptor
-# from core import EncFileManager
+from encryption_registry import EncryptionRegistry
+from encryptors import CaesarEncryptor, XOREncryptor
+from FernetEncryptor import FernetEncryptor
+from core import EncFileManager
 
-# registry = EncryptionRegistry()
-#
-# registry.register(CaesarEncryptor())
-# registry.register(XOREncryptor())
-# registry.register(FernetEncryptor())
+registry = EncryptionRegistry()
+
+registry.register(CaesarEncryptor())
+registry.register(XOREncryptor())
+registry.register(FernetEncryptor())
 
 # نفس الكائن
 # shared_encryptor = registry.get_encryptor("xor")
@@ -70,22 +70,62 @@
 
 
 #الفقرة الرابعة\ Advanced Operator Overloading
-
+from encryption_registry import EncryptionRegistry
 from core import EncFileManager
 
-manager1 = EncFileManager(vault_folder="vault1")
-manager2 = EncFileManager(vault_folder="vault2")
+encryptor1 = registry.get_encryptor("xor")
+encryptor2 = registry.get_encryptor("fernet")
+encryptor3 = registry.get_encryptor("caesar")
 
-manager1.add_file("a.txt", "Hello")
-manager2.add_file("b.txt", "World")
-manager2.add_file("c.txt", "World")
+manager1 = EncFileManager("vault1", encryptor=encryptor1, compare_by="count")
+manager2 = EncFileManager("vault2", encryptor=encryptor2, compare_by="count")
+manager3 = EncFileManager("vault3", encryptor=encryptor3, compare_by="count")
+manager4 = EncFileManager("vault4", encryptor=encryptor3, compare_by="count")
 
-print(manager1)          # __str__
-print(manager2)
+print(manager1 > manager2)
+print(manager4 == manager3)
+print(manager1 != manager3)
 
-print(manager1 < manager2)  # __lt__
-print(manager1 > manager2)  # __gt__
+manager1.compare_by = "size"
+manager2.compare_by = "size"
 
-merg = manager1 + manager2  # __add__
+print(manager1 > manager2)
+print(manager1 < manager2)
 
-print(merg)
+manager1.compare_by = "encryption"
+manager2.compare_by = "encryption"
+manager3.compare_by = "encryption"
+
+print(manager1 > manager2)
+print(manager2 > manager3)
+
+# اختبار الخطأ
+# manager1.compare_by = "size"
+# manager2.compare_by = "count"
+#
+# print(manager1 > manager2)
+
+manager1.compare_by = "count"
+manager2.compare_by = "count"
+
+print(manager1 >= manager2)
+print(manager1 <= manager2)
+print(manager1 != manager2)
+
+manager5 = EncFileManager("vault4", encryptor=None, compare_by="encryption")
+
+print(manager4 > manager1)
+
+managers = [manager1, manager2, manager3]
+
+for m in managers:
+    m.compare_by = "size"
+
+sorted_list = sorted(managers)
+
+for m in sorted_list:
+    print(m)
+
+# merg = manager1 + manager2  # __add__
+#
+# print(merg)

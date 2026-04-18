@@ -68,14 +68,16 @@ class FileHandler:
             return self.file_path == other.file_path
         return False
 
-
+from functools import total_ordering
+@total_ordering
 class EncFileManager:
     from base_encryptor import BaseEncryptor
     ALLOWED_EXTENSIONS = (".txt", ".md", ".pdf")
-    def __init__(self, vault_folder='vault', encryptor: BaseEncryptor = None):
+    def __init__(self, vault_folder='vault', encryptor: BaseEncryptor = None, compare_by="count"):
         self.vault_folder = Path(vault_folder).resolve()
         self.vault_folder.mkdir(parents=True, exist_ok=True)
         self.encryptor = encryptor
+        self.compare_by = compare_by
 
     #Added
     def _get_handler(self, file_name: str) -> FileHandler:
@@ -129,8 +131,36 @@ class EncFileManager:
         handler = self._get_handler(file_name)
         return handler.delete()
 
-    def __len__(self):
-        return len(self.list_files())
+    def _total_size(self):
+        total = 0
+        for file in self.list_files():
+            path = Path(file)
+            if path.exists():
+                total += path.stat().st_size
+        return total
+
+    def _encryption_rank(self):
+        if not self.encryptor:
+            return 0
+        ranks = {
+            "caesar": 1,
+            "xor": 2,
+            "fernet": 3
+        }
+        return ranks.get(self.encryptor.name.lower(), 0)
+
+    def _comparison_value(self):
+        if self.compare_by == "count":
+            return len(self)
+
+        elif self.compare_by == "size":
+            return self._total_size()
+
+        elif self.compare_by == "encryption":
+            return self._encryption_rank()
+
+        else:
+            return 0
 
     def __getitem__(self, file_name):
         return self.read_file(file_name)
@@ -144,16 +174,6 @@ class EncFileManager:
             return handler.file_path.is_file()
         except ValueError:
             return False
-
-    def __lt__(self, other):
-        if not isinstance(other, EncFileManager):
-            return NotImplemented
-        return len(self) < len(other)
-
-    def __gt__(self, other):
-        if not isinstance(other, EncFileManager):
-            return NotImplemented
-        return len(self) > len(other)
 
     def __str__(self):
         return f"[Vault: {len(self)} files]"
@@ -176,3 +196,24 @@ class EncFileManager:
                     new_manager.add_file(file_name, content)
 
         return new_manager
+
+
+    def __len__(self):
+        return len(self.list_files())
+
+    def __eq__(self, other):
+        if not isinstance(other, EncFileManager):
+            return NotImplemented
+
+        if self.compare_by != other.compare_by:
+            raise ValueError("Cannot compare with different comparison modes")
+        return self._comparison_value() == other._comparison_value()
+
+    def __lt__(self, other):
+        if not isinstance(other, EncFileManager):
+            return NotImplemented
+        if self.compare_by != other.compare_by:
+            raise ValueError("Cannot compare with different comparison modes")
+        return self._comparison_value() < other._comparison_value()
+
+
