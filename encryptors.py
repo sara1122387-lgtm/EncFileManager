@@ -1,4 +1,5 @@
 #encryptors.py
+
 from base_encryptor import BaseEncryptor
 
 class CaesarEncryptor(BaseEncryptor):
@@ -31,11 +32,3 @@ class XOREncryptor(BaseEncryptor):
 
     def decrypt(self, data: bytes) -> bytes:
         return bytes(b ^ self.key for b in data)
-
-
-
-
-
-
-
-

@@ -1,4 +1,5 @@
 #FernetEncryptor.py
+
 from base_encryptor import BaseEncryptor
 from cryptography.fernet import Fernet
 from pathlib import Path
@@ -25,14 +26,3 @@ class FernetEncryptor(BaseEncryptor):
 
     def decrypt(self, data: bytes) -> bytes:
         return self.cipher.decrypt(data)
-
-
-
-
-
-
-
-
-
-
-

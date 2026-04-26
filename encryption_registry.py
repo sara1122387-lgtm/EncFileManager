@@ -1,3 +1,5 @@
+#encryption_registry.py
+
 from base_encryptor import BaseEncryptor
 
 class EncryptionRegistry:
