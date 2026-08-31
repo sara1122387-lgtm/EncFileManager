@@ -1,62 +1,96 @@
-from core import EncFileManager
-from encryptors import CaesarEncryptor
-from encryptors import XOREncryptor
-from  FernetEncryptor import FernetEncryptor
+# test_phase6.py
+
 from pathlib import Path
+import shutil
+
+from core import EncFileManager
+from encryptors import CaesarEncryptor, XOREncryptor
+from FernetEncryptor import FernetEncryptor
+
+
+TEST_VAULT = Path("phase6_test_vault")
+
 
 def readiness_test():
-    print("Starting readiness test for Phase 6...")
+    print("\n--- Starting Phase 6 Readiness Test ---")
 
-    vault = Path("vault")
-    vault.mkdir(exist_ok=True)
+    if TEST_VAULT.exists():
+        shutil.rmtree(TEST_VAULT)
 
-    test_files = {
-        "file_caesar.txt": "Hello Caesar Cipher!",
-        "file_xor.txt": "Hello XOR Cipher!",
-        "file_fernet.txt": "Hello Fernet Encryption!"
-    }
+    try:
+        encryptors = [
+            (
+                "Caesar",
+                CaesarEncryptor(key=5),
+                "Hello Caesar Cipher!"
+            ),
+            (
+                "XOR",
+                XOREncryptor(key=123),
+                "Hello XOR Cipher!"
+            ),
+            (
+                "Fernet",
+                FernetEncryptor(
+                    key_path=TEST_VAULT / "test_secret.key"
+                ),
+                "Hello Fernet Encryption!"
+            ),
+        ]
 
-    encryptors = {
-        "Caesar": CaesarEncryptor(key=5),
-        "XOR": XOREncryptor(key=123),
-        "Fernet": FernetEncryptor(key_path="secret.key")
-    }
+        for name, encryptor, content in encryptors:
+            print(f"\nTesting {name}Encryptor...")
 
-    for name, encryptor in encryptors.items():
-        print(f"\nTesting {name}Encryptor...")
-        manager = EncFileManager(vault_folder=vault, encryptor=encryptor)
+            manager = EncFileManager(
+                vault_folder=TEST_VAULT,
+                encryptor=encryptor
+            )
 
-        # اختيار الملف النصي الخاص بهذا التشفير
-        file_name, content = list(test_files.items())[list(encryptors.keys()).index(name)]
+            filename = f"file_{name.lower()}.txt"
 
-        # 1. إضافة الملف
-        if manager.add_file(file_name, content):
-            print(f"✅ {file_name} written successfully.")
-        else:
-            print(f"❌ Failed to write {file_name}.")
+            # 1. Add file
+            assert manager.add_file(filename, content), \
+                f"{name}: failed to write file"
 
-        # 2. قراءة الملف
-        read_content = manager.read_file(file_name)
-        if read_content == content:
-            print(f"✅ {file_name} read successfully and matches original.")
-        else:
-            print(f"❌ Read content does not match original!")
-            print("Expected:", content)
-            print("Got:", read_content)
+            print(f"  [OK] {filename} written successfully")
 
-        # 3. التحقق من قائمة الملفات
-        if file_name in manager.list_files():
-            print(f"✅ {file_name} exists in vault.")
-        else:
-            print(f"❌ {file_name} missing in vault!")
+            # 2. Verify file exists
+            assert filename in manager, \
+                f"{name}: file was not found in vault"
 
-        # 4. حذف الملف بعد الاختبار
-        if manager.delete_file(file_name):
-            print(f"✅ {file_name} deleted successfully.")
-        else:
-            print(f"❌ Failed to delete {file_name}.")
+            print(f"  [OK] {filename} exists in vault")
 
-    print("\nReadiness test completed.")
+            # 3. Read and decrypt file
+            read_content = manager.read_file(filename)
+
+            assert read_content == content, \
+                f"{name}: decrypted content does not match original"
+
+            print(f"  [OK] {filename} read successfully")
+
+            # 4. Verify file is listed
+            assert filename in manager.list_files(), \
+                f"{name}: file missing from file list"
+
+            print(f"  [OK] {filename} appears in file list")
+
+            # 5. Delete file
+            assert manager.delete_file(filename), \
+                f"{name}: failed to delete file"
+
+            print(f"  [OK] {filename} deleted successfully")
+
+            # 6. Confirm deletion
+            assert filename not in manager, \
+                f"{name}: file still exists after deletion"
+
+        print("\nPhase 6 readiness test passed successfully ✔")
+
+    finally:
+        # Remove all test artifacts
+        if TEST_VAULT.exists():
+            shutil.rmtree(TEST_VAULT)
+
 
 if __name__ == "__main__":
     readiness_test()

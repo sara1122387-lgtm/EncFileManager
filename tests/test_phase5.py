@@ -1,53 +1,75 @@
+# test_phase5.py
+
+from pathlib import Path
+import shutil
+
 from core import EncFileManager
 from FernetEncryptor import FernetEncryptor
-import os
+
+
+TEST_VAULT = Path("vault_test")
+TEST_KEY = TEST_VAULT / "test_secret.key"
+
 
 def test_phase_5():
     print("\n--- Starting Phase 5 Test ---")
 
-    # 1. إنشاء الإنكربتور
-    encryptor = FernetEncryptor(key_path="secret.key")
-    print("[OK] FernetEncryptor initialized")
+    # Start with a clean test environment
+    if TEST_VAULT.exists():
+        shutil.rmtree(TEST_VAULT)
 
-    # 2. إنشاء مدير الملفات
-    manager = EncFileManager(vault_folder="vault_test", encryptor=encryptor)
-    print("[OK] EncFileManager created")
+    try:
+        # 1. Initialize FernetEncryptor
+        encryptor = FernetEncryptor(key_path=TEST_KEY)
+        print("[OK] FernetEncryptor initialized")
 
-    # 3. حذف الملفات القديمة داخل vault_test (تنظيف)
-    for f in manager.list_files():
-        manager.delete_file(f)
-    print("[OK] Vault cleaned")
+        # 2. Create encrypted file manager
+        manager = EncFileManager(
+            vault_folder=TEST_VAULT,
+            encryptor=encryptor
+        )
+        print("[OK] EncFileManager created")
 
-    # 4. محاولة إضافة ملف مشفر
-    filename = "test_secure.txt"
-    content = "This is a secret message for phase 5!"
+        # 3. Add encrypted file
+        filename = "test_secure.txt"
+        content = "This is a secret message for phase 5!"
 
-    added = manager.add_file(filename, content)
-    assert added, "❌ Failed to add encrypted file"
+        assert manager.add_file(filename, content), \
+            "Failed to add encrypted file"
 
-    print("[OK] Encrypted file created")
+        print("[OK] Encrypted file created")
 
-    # 5. تأكد أن الملف مخزن مشفرًا وليس نصًا واضحًا
-    raw_path = os.path.join("vault_test", filename)
-    with open(raw_path, "rb") as f:
-        raw = f.read()
+        # 4. Verify that plaintext is not stored
+        raw_path = TEST_VAULT / filename
 
-    assert content.encode("utf-8") not in raw, "❌ File is NOT encrypted!"
-    print("[OK] File is stored encrypted (not plain text)")
+        with open(raw_path, "rb") as file:
+            raw_data = file.read()
 
-    # 6. قراءة الملف بعد فك التشفير
-    decrypted = manager.read_file(filename)
-    assert decrypted == content, "❌ Decryption failed — content mismatch"
+        assert content.encode("utf-8") not in raw_data, \
+            "File is stored as plain text"
 
-    print("[OK] Decryption successful")
+        print("[OK] File is stored encrypted")
 
-    # 7. حذف الملف
-    deleted = manager.delete_file(filename)
-    assert deleted, "❌ Failed to delete file"
+        # 5. Read and decrypt the file
+        decrypted = manager.read_file(filename)
 
-    print("[OK] File deletion successful")
+        assert decrypted == content, \
+            "Decryption failed: content mismatch"
 
-    print("\n🎉 ALL PHASE 5 TESTS PASSED SUCCESSFULLY 🎉")
+        print("[OK] Decryption successful")
+
+        # 6. Delete the file
+        assert manager.delete_file(filename), \
+            "Failed to delete encrypted file"
+
+        print("[OK] File deletion successful")
+
+        print("\nPhase 5 test passed successfully ✔")
+
+    finally:
+        # Remove all test artifacts, including the temporary key
+        if TEST_VAULT.exists():
+            shutil.rmtree(TEST_VAULT)
 
 
 if __name__ == "__main__":

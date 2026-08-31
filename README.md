@@ -1,270 +1,602 @@
-# **EncFileManager**
+# EncFileManager
 
-## Course
-**OOP1 - Object-Oriented Programming**  
-Instructor: [Alaa Khalaf]
+**EncFileManager** is a modular Python-based file vault that combines controlled file management with pluggable encryption strategies.
 
-### Project Stage - Phase 1
-**This is Phase 1 of the project** – only the basic project skeleton and file handling classes have been implemented.  
-Future phases will include encryption, advanced features, and contributions from the team.
+The project explores practical applications of object-oriented design, abstraction, polymorphism, strategy-based architecture, operator overloading, and composable encryption pipelines within a small, self-contained system.
 
-### Project Stage - Phase 2
-**Phase 2 (Refactor & Stability Improvements)** – The file handling classes have been refactored for better reliability and maintainability.  
-Future phases will include encryption, GUI, and advanced features.
-#### Key Updates
-- Replaced string paths with `pathlib.Path` in FileHandler to prevent errors like AttributeError in read().
-- Improved folder creation and rename operations to handle non-existing folders and avoid overwriting existing files.
-- Added `_safe_path()` method in EncFileManager to prevent access outside the vault folder.
-- Unified file extension checks to support additional types (`txt`, `md`, `pdf`).
-- Added proper docstrings and comments for clarity.
+Rather than coupling the file manager to a specific encryption algorithm, the architecture allows encryption strategies to be exchanged, registered, and composed without modifying the core file-management logic.
 
-### Project Stage - Phase 3
-**Phase 3 (Simple Encryption Implementation)** – Added basic file encryption/decryption functionality.
-#### Key Updates
-- Introduced `Encryptor` class with Caesar Cipher.
-- Added `caesar_encrypt()` and `caesar_decrypt()` methods.
-- Demonstrated encryption/decryption for files in the `vault` folder.
-- Prepared the code for future extension using inheritance and multiple encryption algorithms.
-
-#### Notes
-- This phase focuses on understanding encryption logic (strings vs bytes, shifting characters).
-- XOR or other algorithms can be added in future phases.
-- Current encryption only works on text files (`txt`).
-
-### Project Stage - Phase 4
-**Phase 4 (Integration & Encrypted File Handling Extension)** – This phase focuses on integrating encryption logic into the file management system and improving its modularity and usability.
-#### Key Updates
-- Added EncryptedFileHandler class that extends FileHandler to support encrypted read/write operations.
-- Integrated the CaesarEncryptor class for simple encryption and decryption of text files.
-- Made encryption optional — the handler works in normal or encrypted mode depending on whether an encryptor object is provided.
-- Improved code reusability by using super() calls and consistent return values for all I/O operations.
-- Added type hints and detailed docstrings for better readability and future maintainability.
-- Prepared the project for future integration of multiple encryption algorithms (e.g., XOR, AES).
-
-#### Notes
-- The encryption system is now fully integrated into the core file management workflow.
-- Users can now choose between normal and encrypted file operations without changing the main code logic.
-- This phase emphasizes object-oriented design and inheritance-based extensibility.
-- Next phases will explore GUI interaction and stronger encryption algorithms.
-
-### Project Stage - Phase 5
-**Phase 5 (Validation, Testing & Internal Utilities)** – This phase focuses on verifying system stability, adding automated checks, and ensuring that all previous phases integrate correctly.
-#### Key Updates
-- Added SystemValidator class to perform integrity checks on vault folder, file operations, and encryption components. 
-- Implemented a simple readiness test to ensure:
-  - Required folders exist 
-  - FileHandler operations work without throwing exceptions 
-- Encryption/decryption pipeline runs successfully 
-- Introduced internal utilities for cleaner logging and debug messages. 
-- Prepared the project for GUI integration and stronger cryptographic algorithms in the next stage.
-
-#### Notes
-- This phase does not introduce new user
-- facing features; it strengthens the internal structure. 
-- The goal is to confirm that Phase 1–4 are stable, modular, and safe to extend.
-- The validation system can be expanded later to include unit tests (pytest) or auto-check scripts.
-
-### Project Stage - Phase 6
-**Phase 6 (Polymorphism & Strategy Pattern)** – This phase focuses on professionalizing the encryption system using polymorphism and a strategy pattern, allowing multiple encryption algorithms to be used interchangeably.
-#### Key Updates
-- Introduced BaseEncryptor interface using ABC (Abstract Base Class) for a common encrypt/decrypt API.
-- Refactored CaesarEncryptor to inherit from BaseEncryptor and implement required methods.
-- Created XOREncryptor as a new option, inheriting from BaseEncryptor, supporting XOR-based encryption for demonstration.
-- Updated FernetEncryptor to implement BaseEncryptor, supporting bytes-based encryption with Fernet (AES-128 + HMAC).
-- Modified EncFileManager to use any encryptor via the unified interface:
-  - self.encryptor.encrypt(data)
-  - self.encryptor.decrypt(data)
-- Eliminated tight coupling: EncFileManager no longer depends on specific encryption classes, allowing easy swapping of algorithms.
-- Prepared the project for future expansion with additional encryptors or GUI integration.
-
-#### Notes
-- This phase emphasizes OOP best practices, clean separation of concerns, and code extensibility.
-- Users can switch encryption methods without modifying core file management logic.
-- Polymorphism ensures the same EncFileManager code works regardless of the underlying encryption algorithm.
-- Future phases may add configuration options to select encryption strategies at runtime.
-
-
-### Project Completion & Special Methods
-
-**Phase 7 (Finalization & Advanced Python Features)** – This final phase focuses on adding Pythonic enhancements, including special (magic) methods, and consolidating the project into a professional, extensible file management system.
-#### Key Updates
-- Implemented Special Methods across core classes:
-  - __getitem__ and __setitem__ in EncFileManager for dictionary-like file access.
-  - __contains__ in EncFileManager to check for file existence using in.
-  - __len__ in EncFileManager to quickly get the number of files.
-  - __str__ and __repr__ in FileHandler and EncFileManager for readable and unambiguous object representation.
-  - Comparison methods (__eq__ and __lt__) in FileHandler to allow file comparisons by name or custom logic.
-- Verified full integration of encryption strategies (Caesar, XOR, Fernet) via the unified BaseEncryptor interface.
-- Added automated readiness tests confirming:
-  - Vault folder integrity
-  - File operations (read/write/delete/rename)
-  - Encryption/decryption pipeline works correctly for all encryptors
-  - Special methods operate as expected
-
-#### Notes
-- The project now behaves like a professional Python package: modular, secure, and highly extensible.
-- Users can easily switch encryption strategies or extend functionality with minimal changes to core logic.
-- The system demonstrates advanced OOP principles: inheritance, polymorphism, abstraction, and operator overloading.
-- Future improvements can include GUI integration, dynamic selection of encryption strategies at runtime, and support for additional file types.
-  
-
-## Team
-- **[Sara Mohammed Abd AL_Zahra]** – Lead Developer & Coordinator
-<<<<<<< HEAD
-- **[Sara Ahmed]** – Team Member (added for course requirement; no active contributions)
-=======
-- **[Sara Ahmed]** – Team Member (included as per course requirement)
->>>>>>> 8a69f45859b60abae8816d5bd3eaefeb0bc40c5b
-
-## Project Goal
-Create a modular Python file management system that:
-- Handles files securely (read, write, delete, rename)
-- Demonstrates Object-Oriented Programming principles
-- Implements basic encryption to illustrate encryption logic
-- Is structured for future expansion with advanced features
-
-## Project Structure
-EncFileManager/
-├── main.py # Main interface ([Sara Mohammed])
-├── core.py # Core classes ([Sara Mohammed])
-├── encryptor.py # Encryption classes ([Sara Mohammed])
-├── base_encryptor.py ([Sara Mohammed])
-├── test_encryptor.py # Checking encryption classes ([Sara Mohammed])
-├── requirements.txt ([Sara Mohammed])
-├── README.md ([Sara Mohammed])
-├── FernetEncryptor.py ([Sara Mohammed])
-├── test_phase5.py ([Sara Mohammed])
-├── test_phase6.py ([Sara Mohammed])
-└── .gitignore ([Sara Mohammed])
-
-
-### Progress - Phase 1
-
-✅ Built project skeleton ([Sara Mohammed])
-✅ Created FileHandler & EncFileManager classes ([Sara Mohammed])
-✅ Implemented basic file operations ([Sara Mohammed])
-
-
-### Progress - Phase 2
-
-✅ Refactored FileHandler to use pathlib.Path ([Sara Mohammed])  
-✅ Enhanced EncFileManager with _safe_path() for security ([Sara Mohammed])  
-✅ Unified file extension validation ([Sara Mohammed])  
-✅ Added comments and docstrings for clarity ([Sara Mohammed])
-
-
-### Progress - Phase 3
-
-✅ Created Encryptor class implementing Caesar Cipher ([Sara Mohammed])
-✅ Added caesar_encrypt() and caesar_decrypt() methods ([Sara Mohammed])
-✅ Tested encryption and decryption on files within the vault folder ([Sara Mohammed])
-✅ Structured project for future integration with core classes via inheritance ([Sara Mohammed])
-✅ Documented encryption logic and usage notes in code comments ([Sara Mohammed])
-
-
-### Progress - Phase 4
-
-✅ Created EncryptedFileHandler class ([Sara Mohammed])
-✅ Integrated encryption functionality with FileHandler ([Sara Mohammed])
-✅ Improved flexibility and optional encryption use ([Sara Mohammed])
-✅ Added detailed comments, docstrings, and type hints ([Sara Mohammed])
-
-
-### Progress - Phase 5
-
-✅ Implemented FernetEncryptor class using Fernet (AES-128 + HMAC) for real encryption ([Sara Mohammed])
-✅ Added secure key generation and automatic loading/saving of encryption keys ([Sara Mohammed])
-✅ Updated EncFileManager to support pluggable encryption via encryptor=FernetEncryptor() ([Sara Mohammed])
-✅ Modified file operations to handle bytes-based encryption instead of plain text ([Sara Mohammed])
-✅ Added readiness test ensuring folder structure, FileHandler stability, and full encryption/decryption pipeline validation ([Sara Mohammed])
-✅ Documented encryption workflow, key handling, and integration notes for future contributors ([Sara Mohammed])
-
-### Progress - Phase 6
-
-✅ Implemented BaseEncryptor interface using ABC for a unified encryption API ([Sara Mohammed])
-✅ Refactored CaesarEncryptor to inherit from BaseEncryptor ([Sara Mohammed])
-✅ Created XOREncryptor class as an alternative encryption strategy ([Sara Mohammed])
-✅ Updated FernetEncryptor to implement BaseEncryptor ([Sara Mohammed])
-✅ Modified EncFileManager to use polymorphism: support multiple encryption algorithms via strategy pattern ([Sara Mohammed])
-✅ Tested all encryptors with EncFileManager ensuring encryption/decryption works interchangeably ([Sara Mohammed])
-✅ Documented strategy pattern usage, class hierarchy, and guidelines for adding new encryptors ([Sara Mohammed])
-
-### Progress – Final Phase for oop1
-✅ Implemented dictionary-like access for files in EncFileManager ([Sara Mohammed])
-✅ Added file existence checking, length reporting, and readable object representations ([Sara Mohammed])
-✅ Enabled file comparisons using equality and ordering operators ([Sara Mohammed])
-✅ Verified full interoperability with all encryptors ([Sara Mohammed])
-✅ Added automated internal tests for readiness and Special Methods ([Sara Mohammed])
-✅ Documented class hierarchy, usage of magic methods, and guidelines for extension ([Sara Mohammed])
-
-
-
-
-## Project Stage – OOP2 Enhancement & Architectural Refinement
-
-With the transition into the second Object-Oriented Programming course (OOP2), the project has evolved beyond its initial implementation into a more structured, extensible, and concept-driven system. This phase focuses on refining the core architecture while introducing advanced OOP concepts in a practical and meaningful way.
-
-### Key Enhancements
-
-* **Core Refactoring & Simplification**
-  The foundational classes were cleaned and reorganized to reduce unnecessary complexity, ensuring a clearer separation of responsibilities and easier future extension.
-
-* **Unified Byte-Based File Handling**
-  File operations were standardized to work with bytes instead of strings, enabling seamless integration with multiple encryption strategies and improving consistency across the system.
-
-* **Dynamic Encryption Management (Strategy Pattern Inspired)**
-  Introduced an `EncryptionRegistry` to manage encryption strategies dynamically. This allows selecting encryption methods at runtime without modifying the core file management logic, reinforcing the Open/Closed Principle.
-
-* **Polymorphic Array of Objects**
-  Encryption strategies (Caesar, XOR, Fernet) are now managed as a collection of polymorphic objects sharing a common interface (`BaseEncryptor`). This demonstrates real-world use of abstraction and polymorphism.
-
-* **Lambda-Based Dynamic Lookup**
-  Implemented lambda expressions within the registry to efficiently retrieve encryption strategies by name, improving flexibility and reducing conditional logic.
-
-* **Object Reference Behavior (Pointer Concept in Python)**
-  Demonstrated how multiple components can share the same object instance (reference), reflecting Python’s object model and highlighting potential side effects in shared-state scenarios.
-
-* **Simulated Friend Function (Utility Layer)**
-  Added external utility functions that interact with internal class data (e.g., `FileHandler`) to simulate friend-like behavior, supporting debugging and inspection without breaking core design.
-
-* **Advanced Operator Overloading**
-  Enhanced usability by overloading operators in `EncFileManager`, enabling:
-
-  * Comparison between managers (`<`, `>`) based on file count
-  * Merging managers using `+`
-  * Readable object representation via `__str__`
-
-### Outcome
-
-The project now reflects a transition from a functional OOP1 implementation to a more professional OOP2-level system. It emphasizes clean architecture, extensibility, and practical application of advanced object-oriented concepts, while remaining structured for future growth and experimentation.
-
-## Features
-
-- Secure file management within a vault
-- Pluggable encryption strategies (Caesar, XOR, Fernet)
-- Strategy pattern-inspired design
-- Operator overloading for intuitive usage
-- Dynamic encryption selection via registry
-
-
- ## Author / License
-**Lead Developer & Owner:** Sara Mohammed Abd AL_Zahra  
-All code and documentation are authored by Sara Mohammed unless otherwise noted.  
-Recommended license for public GitHub: MIT License or Creative Commons for documentation.
+> **Project Status:** Functional CLI-based implementation with multiple encryption strategies, dynamic strategy registration, and composable encryption pipelines.
 
 ---
 
-Notes
-This is an educational project built step-by-step for learning purposes.
-Future phases will include encryption, GUI, and advanced features.
+## Overview
+
+EncFileManager provides an isolated **Vault** environment where file operations are performed through a controlled interface.
+
+The system supports:
+
+* File creation and writing
+* File reading
+* File deletion
+* File renaming
+* File listing
+* Vault-level file counting
+* Controlled path resolution
+* Optional encryption
+* Multiple interchangeable encryption strategies
+* Runtime encryption strategy selection
+* Composable encryption pipelines
+* Vault comparison using overloaded operators
+* Dictionary-like access to files
+* CLI-based interaction
+
+The project was developed incrementally, evolving from basic file handling into a more extensible object-oriented architecture.
+
+---
+
+## Architecture
+
+The core architecture separates file management from encryption.
+
+```text
+                         ┌─────────────────────┐
+                         │       CLI / UI       │
+                         │     interface.py    │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │  EncFileManager     │
+                         │       core.py       │
+                         └───────┬─────┬───────┘
+                                 │     │
+                    ┌────────────┘     └─────────────┐
+                    ▼                                ▼
+             ┌──────────────┐               ┌─────────────────┐
+             │ FileHandler  │               │ BaseEncryptor   │
+             │              │               │      (ABC)      │
+             └──────┬───────┘               └────────┬────────┘
+                    │                                │
+                    ▼                    ┌───────────┼───────────┐
+              File System                ▼           ▼           ▼
+                                      Caesar        XOR        Fernet
+                                                   
+                                      └─────────────┬─────────────┘
+                                                    │
+                                                    ▼
+                                         EncryptionPipeline
+```
+
+### Main Components
+
+#### `FileHandler`
+
+Responsible for low-level file operations:
+
+* Read
+* Write
+* Rename
+* Delete
+* File path management
+
+File content is handled as bytes, allowing the same file-handling layer to work with different encryption strategies.
+
+#### `EncFileManager`
+
+Acts as the main vault-level abstraction.
+
+Responsibilities include:
+
+* Vault creation and management
+* Path validation
+* File operations
+* Optional encryption/decryption
+* Encryption strategy integration
+* File collection behavior
+* Vault comparison
+* Operator overloading
+
+#### `BaseEncryptor`
+
+An abstract interface defining a common encryption contract:
+
+```python
+encrypt(data: bytes) -> bytes
+decrypt(data: bytes) -> bytes
+```
+
+This abstraction allows different encryption implementations to be used interchangeably.
+
+#### `EncryptionRegistry`
+
+Provides dynamic registration and lookup of encryption strategies.
+
+Strategies can be retrieved by name instead of being hard-coded into the file manager.
+
+#### `EncryptionPipeline`
+
+Allows multiple encryption strategies to be composed into a sequential pipeline.
+
+For example:
+
+```python
+pipeline = caesar | xor | fernet
+```
+
+Encryption is applied from left to right, while decryption reverses the sequence.
+
+---
+
+## Encryption Strategies
+
+### Caesar
+
+A simple byte-shifting implementation.
+
+```text
+Purpose:
+Educational demonstration of encryption concepts.
+
+Security:
+Not suitable for protecting real confidential data.
+```
+
+### XOR
+
+A simple XOR-based implementation.
+
+```text
+Purpose:
+Educational demonstration of symmetric transformation and
+interchangeable encryption strategies.
+
+Security:
+Not suitable for protecting real confidential data.
+```
+
+### Fernet
+
+The project also integrates Fernet through the `cryptography` library.
+
+Fernet provides authenticated symmetric encryption and is the project's practical cryptographic option.
+
+The implementation also supports:
+
+* Automatic key generation
+* Persistent key storage
+* Loading an existing key
+* Byte-based encryption/decryption
+
+> **Important:** The security of a real deployment depends on appropriate key management. Encryption keys should never be committed to a public repository.
+
+---
+
+## Encryption Pipeline
+
+One of the main architectural features is composable encryption.
+
+Because encryption strategies inherit from `BaseEncryptor`, they can be combined using the `|` operator:
+
+```python
+pipeline = caesar | xor | fernet
+```
+
+The resulting flow is:
+
+```text
+Original Data
+     │
+     ▼
+  Caesar
+     │
+     ▼
+    XOR
+     │
+     ▼
+   Fernet
+     │
+     ▼
+Encrypted Data
+```
+
+During decryption, the pipeline automatically reverses the order:
+
+```text
+Encrypted Data
+     │
+     ▼
+   Fernet
+     │
+     ▼
+    XOR
+     │
+     ▼
+  Caesar
+     │
+     ▼
+Original Data
+```
+
+This demonstrates how operator overloading can be combined with polymorphism to create a composable API.
+
+---
+
+## Dynamic Encryption Registry
+
+Encryption strategies are registered through `EncryptionRegistry`.
+
+```python
+registry = EncryptionRegistry()
+
+registry.register(CaesarEncryptor())
+registry.register(XOREncryptor())
+registry.register(FernetEncryptor())
+```
+
+Strategies can then be resolved dynamically:
+
+```python
+encryptor = registry.get_encryptor("fernet")
+```
+
+This keeps `EncFileManager` independent from individual encryption implementations.
+
+The design also makes it possible to introduce additional strategies without rewriting the core file-management logic.
+
+---
+
+## Object-Oriented Design
+
+The project demonstrates several object-oriented and Python-specific concepts.
+
+### Abstraction
+
+`BaseEncryptor` defines a common interface for all encryption strategies.
+
+### Inheritance
+
+Concrete encryptors inherit from `BaseEncryptor`.
+
+```text
+BaseEncryptor
+    ├── CaesarEncryptor
+    ├── XOREncryptor
+    ├── FernetEncryptor
+    └── EncryptionPipeline
+```
+
+### Polymorphism
+
+`EncFileManager` interacts with encryption objects through the shared interface:
+
+```python
+self.encryptor.encrypt(data)
+self.encryptor.decrypt(data)
+```
+
+The manager does not need to know which concrete strategy is being used.
+
+### Operator Overloading
+
+The project uses Python's data model to provide intuitive operations.
+
+Examples include:
+
+```python
+manager["file.txt"]
+manager["file.txt"] = "content"
+
+"file.txt" in manager
+
+len(manager)
+
+manager1 < manager2
+manager1 == manager2
+manager1 + manager2
+```
+
+Encryption pipelines also use:
+
+```python
+caesar | xor | fernet
+```
+
+### `@total_ordering`
+
+`EncFileManager` uses `@total_ordering` to support comparison based on configurable metrics.
+
+Available comparison modes include:
+
+* `count`
+* `size`
+* `encryption`
+
+### Shared Object References
+
+The CLI includes a demonstration of Python's object-reference behavior by allowing multiple managers to reference the same encryptor instance.
+
+### External Inspection Utility
+
+`utils.py` contains an external inspection function that demonstrates a friend-like utility approach for accessing information associated with a `FileHandler` without making the function a class method.
+
+---
+
+## Vault Isolation
+
+The project includes controlled path resolution through `_safe_path()`.
+
+File paths are resolved relative to the configured vault directory before file operations are performed.
+
+The intended security property is to prevent file operations from escaping the vault through path traversal attempts.
+
+The implementation is designed around the principle:
+
+```text
+Requested Path
+      │
+      ▼
+Resolve Absolute Path
+      │
+      ▼
+Validate Against Vault
+      │
+ ┌────┴────┐
+ │         │
+Inside    Outside
+ │         │
+ ▼         ▼
+Allow     Reject
+```
+
+This addresses the class of path traversal concerns commonly associated with **CWE-22**.
+
+> This project is an educational implementation and should not be considered a production-grade security boundary without further security review and hardening.
+
+---
+
+## Command-Line Interface
+
+The project currently provides an interactive CLI through `interface.py`.
+
+The main menu provides access to:
+
+```text
+1) File Management
+2) Build Pipeline
+3) Compare Vaults
+4) Advanced Features
+0) Exit
+```
+
+### File Management
+
+Supports:
+
+* Selecting an encryption strategy
+* Adding files
+* Reading files
+* Deleting files
+* Listing files
+
+### Pipeline Builder
+
+Allows users to construct an encryption pipeline interactively by selecting registered encryption strategies.
+
+### Vault Comparison
+
+Vault managers can be compared using:
+
+* File count
+* Total size
+* Encryption rank
+
+### Advanced Features
+
+The CLI also demonstrates:
+
+* Shared object references
+* External inspection utilities
+* Python operator behavior
+
+---
+
+## Testing
+
+The project includes several standalone test scripts covering different aspects of the system.
+
+### `test_encryptor.py`
+
+Focused on encryption/decryption correctness across the available encryption strategies and the encryption pipeline.
+
+### `test_integration.py`
+
+Tests integration between encryption strategies and `EncFileManager`, including:
+
+* File creation
+* File existence
+* File counting
+* Reading and decryption
+* File deletion
+* Post-deletion verification
+
+The integration flow is exercised with:
+
+* No encryption
+* Caesar
+* XOR
+* Fernet
+
+### `test_phase5.py`
+
+Focuses on Fernet integration and verifies that encrypted content is not stored as the original plaintext.
+
+### `test_phase6.py`
+
+Exercises the unified encryption interface across Caesar, XOR, and Fernet while testing the main file-management workflow.
+
+The tests are currently implemented as lightweight Python test scripts rather than a full `pytest` suite.
+
+---
+
+## Project Structure
+
+```text
+EncFileManager/
+│
+├── main.py
+├── interface.py
+│
+├── core.py
+├── base_encryptor.py
+├── encryptors.py
+├── FernetEncryptor.py
+├── pipeline.py
+├── encryption_registry.py
+├── utils.py
+│
+├── test_encryptor.py
+├── test_integration.py
+├── test_phase5.py
+├── test_phase6.py
+│
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
+
+---
 
 ## Getting Started
+
+### 1. Clone the Repository
+
 ```bash
-# Clone the repository 
-git clone [https://github.com/sara1122387-lgtm/EncFileManager.git]
+git clone https://github.com/sara1122387-lgtm/EncFileManager.git
+cd EncFileManager
+```
 
-# Install dependencies
+### 2. Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# Run the main program
+### 3. Run the Application
+
+```bash
 python main.py
+```
+
+---
+
+## Basic Usage
+
+A manager can operate without encryption:
+
+```python
+manager = EncFileManager("vault")
+
+manager.add_file("example.txt", "Hello EncFileManager!")
+print(manager.read_file("example.txt"))
+```
+
+Or with an encryption strategy:
+
+```python
+encryptor = FernetEncryptor()
+
+manager = EncFileManager(
+    "vault",
+    encryptor=encryptor
+)
+
+manager.add_file("secret.txt", "Confidential content")
+print(manager.read_file("secret.txt"))
+```
+
+A pipeline can also be used:
+
+```python
+pipeline = (
+    CaesarEncryptor()
+    | XOREncryptor()
+    | FernetEncryptor()
+)
+
+manager = EncFileManager(
+    "pipeline_vault",
+    encryptor=pipeline
+)
+```
+
+---
+
+## Security Considerations
+
+EncFileManager is primarily an **educational and architectural project**.
+
+Important considerations:
+
+* Caesar and XOR are demonstration algorithms and should not be used for real security.
+* Fernet provides substantially stronger cryptographic protection than the educational algorithms.
+* Encryption keys must be protected and should not be committed to a public repository.
+* Path validation reduces path traversal risk but should not be treated as a complete security model.
+* The project has not undergone a formal security audit.
+* Production use would require additional hardening, testing, key-management controls, and threat-model-driven security review.
+
+---
+
+## Current Status
+
+The current implementation provides:
+
+* Modular file management
+* Vault-oriented file isolation
+* Byte-based file I/O
+* Abstract encryption interface
+* Multiple encryption strategies
+* Dynamic encryption registry
+* Composable encryption pipelines
+* CLI interaction
+* Operator overloading
+* Vault comparison
+* Integration and readiness tests
+
+The architecture is intentionally extensible, allowing future features to be added without tightly coupling them to the existing file-management layer.
+
+---
+
+## Future Development
+
+Possible future directions include:
+
+* Expanded automated test coverage
+* Migration to a structured `pytest` test suite
+* Improved error handling and exception reporting
+* More robust configuration management
+* Runtime strategy configuration
+* Additional modern cryptographic schemes where technically justified
+* Improved key-management architecture
+* GUI or alternative user interfaces
+* Packaging the project as a reusable Python package
+
+Future features are not considered part of the current implementation unless explicitly added to the codebase.
+
+---
+
+## Author
+
+**Sara Mohammed Abd AL_Zahra**
+
+**Lead Developer & Project Owner**
+
+The project was designed, implemented, and documented as an independent software project exploring secure file handling, cryptographic abstraction, and object-oriented architecture in Python.
+
+---
+
+## License
+
+This project is released under the **MIT License**.
+
+See `LICENSE` for the full license text.
