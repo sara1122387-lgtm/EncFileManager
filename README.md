@@ -1,5 +1,8 @@
 # EncFileManager
 
+[![Tests](https://github.com/sara1122387-lgtm/EncFileManager/actions/workflows/tests.yml/badge.svg)](https://github.com/sara1122387-lgtm/EncFileManager/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **EncFileManager** is a modular Python-based file vault that combines controlled file management with pluggable encryption strategies.
 
 The project explores practical applications of object-oriented design, abstraction, polymorphism, strategy-based architecture, operator overloading, and composable encryption pipelines within a small, self-contained system.
