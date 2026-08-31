@@ -215,5 +215,3 @@ class EncFileManager:
         if self.compare_by != other.compare_by:
             raise ValueError("Cannot compare with different comparison modes")
         return self._comparison_value() < other._comparison_value()
-
-
