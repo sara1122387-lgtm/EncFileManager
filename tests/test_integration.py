@@ -9,14 +9,14 @@ from FernetEncryptor import FernetEncryptor
 
 
 TEST_VAULT = Path("test_vault")
+TEST_KEY = Path("test_secret.key")
 
 
 def run_test(encryptor_factory, label):
     print(f"\n--- Testing {label} ---")
 
-    # Start with a clean test environment
-    if TEST_VAULT.exists():
-        shutil.rmtree(TEST_VAULT)
+    # Create the test vault before initializing the encryptor
+    TEST_VAULT.mkdir(parents=True, exist_ok=True)
 
     encryptor = encryptor_factory()
 
@@ -26,6 +26,7 @@ def run_test(encryptor_factory, label):
     )
 
     try:
+
         # 1. Add file
         assert manager.add_file("test.txt", "Hello World"), \
             f"{label}: failed to add file"
@@ -54,10 +55,16 @@ def run_test(encryptor_factory, label):
 
         print(f"{label} passed ✔")
 
+
     finally:
-        # Remove all test artifacts, including the test key
+
+        # Remove all test artifacts
+
         if TEST_VAULT.exists():
             shutil.rmtree(TEST_VAULT)
+
+        if TEST_KEY.exists():
+            TEST_KEY.unlink()
 
 
 def main():
@@ -67,7 +74,7 @@ def main():
         (lambda: XOREncryptor(key=42), "XOR"),
         (
             lambda: FernetEncryptor(
-                key_path=TEST_VAULT / "test_secret.key"
+                key_path=TEST_KEY
             ),
             "Fernet"
         ),

@@ -8,7 +8,7 @@ from FernetEncryptor import FernetEncryptor
 
 
 TEST_VAULT = Path("vault_test")
-TEST_KEY = TEST_VAULT / "test_secret.key"
+TEST_KEY = Path("test_secret.key")
 
 
 def test_phase_5():
@@ -18,12 +18,15 @@ def test_phase_5():
     if TEST_VAULT.exists():
         shutil.rmtree(TEST_VAULT)
 
+    if TEST_KEY.exists():
+        TEST_KEY.unlink()
+
     try:
-        # 1. Initialize FernetEncryptor
+        # 1. Create Fernet encryptor
         encryptor = FernetEncryptor(key_path=TEST_KEY)
         print("[OK] FernetEncryptor initialized")
 
-        # 2. Create encrypted file manager
+        # 2. Create file manager
         manager = EncFileManager(
             vault_folder=TEST_VAULT,
             encryptor=encryptor
@@ -34,42 +37,53 @@ def test_phase_5():
         filename = "test_secure.txt"
         content = "This is a secret message for phase 5!"
 
-        assert manager.add_file(filename, content), \
-            "Failed to add encrypted file"
+        added = manager.add_file(filename, content)
+        assert added, "Failed to add encrypted file"
 
         print("[OK] Encrypted file created")
 
-        # 4. Verify that plaintext is not stored
+        # 4. Verify that plaintext is not stored directly
         raw_path = TEST_VAULT / filename
 
-        with open(raw_path, "rb") as file:
-            raw_data = file.read()
+        with open(raw_path, "rb") as f:
+            raw = f.read()
 
-        assert content.encode("utf-8") not in raw_data, \
-            "File is stored as plain text"
+        assert content.encode("utf-8") not in raw, \
+            "File is NOT encrypted!"
 
-        print("[OK] File is stored encrypted")
+        print("[OK] File is stored encrypted (not plain text)")
 
-        # 5. Read and decrypt the file
+        # 5. Read the file and verify decryption
         decrypted = manager.read_file(filename)
 
         assert decrypted == content, \
-            "Decryption failed: content mismatch"
+            "Decryption failed — content mismatch"
 
         print("[OK] Decryption successful")
 
         # 6. Delete the file
-        assert manager.delete_file(filename), \
-            "Failed to delete encrypted file"
+        deleted = manager.delete_file(filename)
+
+        assert deleted, \
+            "Failed to delete file"
 
         print("[OK] File deletion successful")
 
-        print("\nPhase 5 test passed successfully ✔")
+        # 7. Verify deletion
+        assert filename not in manager, \
+            "File still exists after deletion"
+
+        print("[OK] File removal verified")
+
+        print("\nALL PHASE 5 TESTS PASSED SUCCESSFULLY")
 
     finally:
-        # Remove all test artifacts, including the temporary key
+        # Remove all test artifacts
         if TEST_VAULT.exists():
             shutil.rmtree(TEST_VAULT)
+
+        if TEST_KEY.exists():
+            TEST_KEY.unlink()
 
 
 if __name__ == "__main__":
